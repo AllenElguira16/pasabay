@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Branch {
+  id            String   @id @unique @default(uuid())
+  branchCode    String   @unique
+  street        String?
+  city          String?
+  province      String?
+  zipCode       String?
+  contactNumber String?
+  dateCreated   DateTime @default(now())
+
+  // NOTE: relations
+  parcels Parcel[]
+  staffs  User[]
+}
+
+model Parcel {
+  id              String       @id @unique @default(uuid())
+  referenceNumber String
+  // NOTE: both sender and recipient have properties of name, address, and contactNumber
+  sender          Json
+  recipient       Json
+  // NOTE: contains information of parcel such as weight, height, width, length, and price
+  info            Json[]
+  deliveryType    DeliveryType
+  branchID        String
+
+  // NOTE: relations
+  branch  Branch         @relation(fields: [branchID], references: [id])
+  tracker ParcelTracker?
+}
+
+model ParcelTracker {
+  id          String       @id @unique @default(uuid())
+  status      ParcelStatus
+  parcelID    String       @unique
+  dateCreated DateTime     @default(now())
+
+  // NOTE: relations
+  parcel Parcel @relation(fields: [parcelID], references: [id])
+}
+
+model User {
+  id          String   @id @unique @default(uuid())
+  firstName   String
+  lastName    String
+  email       String
+  password    String
+  type        UserType
+  branchID    String
+  dateCreated DateTime @default(now())
+
+  branch Branch @relation(fields: [branchID], references: [id])
+}
+
+enum ParcelStatus {
+  ACCEPTED
+  COLLECTED
+  SHIPPED
+  IN_TRANSIT
+  ARRIVED
+  OUT
+  PICKUP
+  DELIVERED
+  PICKED_UP
+  UNSUCCESSFUL
+}
+
+enum DeliveryType {
+  DELIVERY
+  PICK_UP
+}
+
+enum UserType {
+  ADMIN
+  STAFF
+}

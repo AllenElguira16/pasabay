@@ -1,0 +1,36 @@
+{
+  "useTabs": false,
+  "tabWidth": 2,
+  "endOfLine": "auto",
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": ["*.js", "*.mjs", "*.cjs"],
+      "options": {
+        "parser": "babel",
+        "semi": true,
+        "singleQuote": true
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "options": {
+        "parser": "typescript",
+        "semi": true,
+        "singleQuote": true
+      }
+    },
+    {
+      "files": ["*.html", "*.htm"],
+      "options": {
+        "parser": "html"
+      }
+    },
+    {
+      "files": ["*.json"],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}
